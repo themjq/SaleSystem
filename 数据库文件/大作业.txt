@@ -1,0 +1,167 @@
+create database champion;
+use champion;
+/*管理员表*/
+CREATE TABLE `administrators` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `avatar` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '头像',
+  `name` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '姓名',
+  `username` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '用户名',
+  `password` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT '密码',
+  `phone` varchar(11) COLLATE utf8_bin NOT NULL COMMENT '手机号',
+  `sex` varchar(2) COLLATE utf8_bin NOT NULL COMMENT '性别',
+  `id_number` varchar(18) COLLATE utf8_bin NOT NULL COMMENT '身份证号',
+  `status` int NOT NULL DEFAULT '1' COMMENT '状态 0:禁用，1:启用',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_user` bigint DEFAULT NULL COMMENT '创建人',
+  `update_user` bigint DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_username` (`username`)
+)AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='管理员表';
+
+
+/*普通用户*/
+CREATE TABLE `user` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `username` varchar(45) COLLATE utf8_bin DEFAULT NULL COMMENT '用户名',
+  `password` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '密码',
+  `name` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '姓名',
+  `phone` varchar(11) COLLATE utf8_bin DEFAULT NULL COMMENT '手机号',
+  `sex` varchar(2) COLLATE utf8_bin DEFAULT NULL COMMENT '性别',
+  `id_number` varchar(18) COLLATE utf8_bin DEFAULT NULL COMMENT '身份证号',
+  `avatar` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '头像',
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='普通用户表';
+
+/*地址薄*/
+CREATE TABLE `address_book` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` bigint NOT NULL COMMENT '用户id',
+  `consignee` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '收货人',
+  `sex` varchar(2) COLLATE utf8_bin DEFAULT NULL COMMENT '性别',
+  `phone` varchar(11) COLLATE utf8_bin DEFAULT NULL COMMENT '手机号',
+  `province_code` varchar(12) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '省级区划编号',
+  `province_name` varchar(32) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '省级名称',
+  `city_code` varchar(12) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '市级区划编号',
+  `city_name` varchar(32) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '市级名称',
+  `district_code` varchar(12) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '区级区划编号',
+  `district_name` varchar(32) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '区级名称',
+  `detail` varchar(200) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '详细地址',
+  `label` varchar(100) CHARACTER SET utf8mb4  DEFAULT NULL COMMENT '标签',
+  `is_default` tinyint(1) NOT NULL DEFAULT '0' COMMENT '默认 0 否 1是',
+  PRIMARY KEY (`id`)
+)AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='地址簿';
+
+
+
+/*订单表*/
+CREATE TABLE `orders` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `order_number` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '订单号',
+  `china_detail_id` bigint NOT NULL COMMENT '瓷砖详细id',
+  `status` int NOT NULL DEFAULT '1' COMMENT '订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消 7退款',
+  `user_id` bigint NOT NULL COMMENT '下单用户id',
+  `address_book_id` bigint NOT NULL COMMENT '地址id',
+  `order_time` datetime NOT NULL COMMENT '下单时间',
+  `number` int NOT NULL DEFAULT '1' COMMENT '数量',
+  `amount` decimal(10,2) NOT NULL COMMENT '金额',
+  `checkout_time` datetime DEFAULT NULL COMMENT '结账时间',
+  `pay_method` int NOT NULL DEFAULT '1' COMMENT '支付方式 1微信,2支付宝',
+  `pay_status` tinyint NOT NULL DEFAULT '0' COMMENT '支付状态 0未支付 1已支付 2退款',
+  `remark` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT '备注',
+  `phone` varchar(11) COLLATE utf8_bin DEFAULT NULL COMMENT '手机号',
+  `user_name` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '用户名称',
+  `consignee` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '收货人',
+  `cancel_reason` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '订单取消原因',
+  `rejection_reason` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '订单拒绝原因',
+  `cancel_time` datetime DEFAULT NULL COMMENT '订单取消时间',
+  `start_delivery_time` datetime DEFAULT NULL COMMENT '预计发货时间',
+  `end_delivery_time` datetime DEFAULT NULL COMMENT '预计送达时间',
+  `delivery_time` datetime DEFAULT NULL COMMENT '送达时间',
+  PRIMARY KEY (`id`)
+)AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='订单表';
+
+
+/*瓷砖表*/
+CREATE TABLE `china` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '型号',
+  `image` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '图片',
+  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '描述信息',
+  `style` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '风格',
+  `types` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '类型',
+  `applicable` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '适用对象',
+  `status` int DEFAULT '1' COMMENT '0 停售 1 起售',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_user` bigint DEFAULT NULL COMMENT '创建人',
+  `update_user` bigint DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_dish_name` (`name`)
+)AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='瓷砖表';
+
+
+
+/*瓷砖详情表*/
+CREATE TABLE `china_detail` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `china_id` bigint NOT NULL COMMENT '瓷砖id',
+  `image` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '图片',
+  `specification` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '规格',
+  `color` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '颜色',
+  `size` varchar(32) COLLATE utf8_bin NOT NULL COMMENT '尺码',
+  `price` decimal(10,2) COLLATE utf8_bin NOT NULL COMMENT '价格',
+  PRIMARY KEY (`id`)
+)AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='瓷砖详情表';
+
+
+/*购物车表*/
+CREATE TABLE `shopping_cart` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '描述信息',
+  `image` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '图片',
+  `user_id` bigint NOT NULL COMMENT '用户id',
+  `china_id` bigint DEFAULT NULL COMMENT '瓷砖id',
+  `china_detail` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '瓷砖详细信息',
+  `number` int NOT NULL DEFAULT '1' COMMENT '数量',
+  `amount` decimal(10,2) NOT NULL COMMENT '金额',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+)AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='购物车';
+
+/*管理员表*/ 
+INSERT INTO administrators (avatar,name, username, password, phone, sex, id_number, status, create_time, update_time, create_user, update_user) VALUES 
+('avatar1.jpg','管理员1', 'admin', '123456', '12345678901', '男', '123456789012345678', 1, '2021-01-01 00:00:00', '2021-01-01 00:00:00', 1, 1),
+('avatar2.jpg','管理员2', 'admin2', '123456', '12345678902', '女', '123456789012345679', 1, '2021-01-01 00:00:00','2021-01-01 00:00:00', 1, 1);
+
+/*普通用户*/ 
+INSERT INTO user (username,password, name, phone, sex, id_number, avatar, create_time) VALUES
+ ('user1','123456', '用户1', '12345678911', '男', '123456789012345678', 'avatar1.jpg', '2021-01-01 00:00:00'), 
+('user2','123456','用户2', '12345678912', '女', '123456789012345679', 'avatar2.jpg', '2021-01-01 00:00:00'),
+('user3','123456', '用户1', '12345678911', '男', '123456789012345678', 'avatar1.jpg', '2021-01-01 00:00:00'), 
+('user4','123456','用户2', '12345678912', '女', '123456789012345679', 'avatar2.jpg', '2021-01-01 00:00:00'),
+('user5','123456', '用户1', '12345678911', '男', '123456789012345678', 'avatar1.jpg', '2021-01-01 00:00:00'), 
+('user6','123456','用户2', '12345678912', '女', '123456789012345679', 'avatar2.jpg', '2021-01-01 00:00:00'),
+('user7','123456', '用户1', '12345678911', '男', '123456789012345678', 'avatar1.jpg', '2021-01-01 00:00:00'), 
+('user8','123456','用户2', '12345678912', '女', '123456789012345679', 'avatar2.jpg', '2021-01-01 00:00:00'),
+('user9','123456', '用户1', '12345678911', '男', '123456789012345678', 'avatar1.jpg', '2021-01-01 00:00:00'), 
+('user10','123456','用户2', '12345678912', '女', '123456789012345679', 'avatar2.jpg', '2021-01-01 00:00:00'),
+('user11','123456', '用户1', '12345678911', '男', '123456789012345678', 'avatar1.jpg', '2021-01-01 00:00:00'), 
+('user12','123456','用户2', '12345678912', '女', '123456789012345679', 'avatar2.jpg', '2021-01-01 00:00:00');
+
+/*地址*/ 
+INSERT INTO address_book (user_id, consignee, sex, phone, province_code, province_name, city_code, city_name, district_code, district_name, detail, label, is_default) VALUES (1, '张三', '男', '12345678901', '110000', '北京市', '110100', '市辖区', '110101', '东城区', 'xx街道xx号', '家', 1), (1, '李四', '女', '12345678902', '110000', '北京市', '110100', '市辖区', '110102', '西城区', 'xx街道xx号', '公司', 0), (2, '王五', '男', '12345678903', '310000', '上海市', '310100', '市辖区', '310101', '黄浦区', 'xx街道xx号', '家', 1), (2, '赵六', '女', '12345678904', '310000', '上海市', '310100', '市辖区', '310104', '徐汇区', 'xx街道xx号', '公司', 0), (3, '孙七', '男', '12345678905', '440000', '广东省', '440100', '广州市', '440103', '荔湾区', 'xx街道xx号', '家', 1);
+
+/*订单*/ 
+INSERT INTO orders (order_number, china_detail_id, status, user_id, address_book_id, order_time, number, amount, checkout_time, pay_method, pay_status, remark, phone, user_name, consignee, cancel_reason, rejection_reason, cancel_time, start_delivery_time, end_delivery_time, delivery_time) VALUES ('202101010001', 1, 1, 1, 1, '2021-01-01 10:00:00', 2, 100.00, NULL, 1, 0, '无', '12345678901', '张三', '张三', NULL, NULL, NULL, NULL, NULL, NULL), ('202101010002', 2, 2, 1, 2, '2021-01-02 11:00:00', 1, 50.00, NULL, 2, 0, '无', '12345678901', '张三', '李四', NULL, NULL, NULL, NULL, NULL, NULL), ('202101020001', 3, 3, 2, 3, '2021-01-03 12:00:00', 3, 150.00, NULL, 1, 0, '无', '12345678903', '王五', '王五', NULL, NULL, NULL, NULL, NULL, NULL), ('202101020002', 4, 4, 2, 4, '2021-01-04 13:00:00', 1, 50.00, NULL, 2, 0, '无', '12345678903', '王五', '赵六', NULL, NULL, NULL, NULL, NULL, NULL), ('202101030001', 5, 5, 3, 5, '2021-01-05 14:00:00', 2, 100.00, NULL, 1, 0, '无', '12345678905', '孙七', '孙七', NULL, NULL, NULL, NULL, NULL, NULL);
+
+/*瓷砖*/ 
+INSERT INTO china (name, image, description, style, types, applicable, status, create_time, update_time, create_user, update_user) VALUES ('瓷砖1', 'image1.jpg', '瓷砖1描述', '现代', '地砖', '家庭', 1, '2021-01-01 10:00:00', NULL, 1, NULL), ('瓷砖2', 'image2.jpg', '瓷砖2描述', '古典', '墙砖', '商业', 1, '2021-01-02 11:00:00', NULL, 1, NULL), ('瓷砖3', 'image3.jpg', '瓷砖3描述', '简约', '地砖', '家庭', 1, '2021-01-03 12:00:00', NULL, 1, NULL), ('瓷砖4', 'image4.jpg', '瓷砖4描述', '现代', '墙砖', '商业', 1, '2021-01-04 13:00:00', NULL, 1, NULL), ('瓷砖5', 'image5.jpg', '瓷砖5描述', '古典', '地砖', '家庭', 1, '2021-01-05 14:00:00', NULL, 1, NULL);
+
+/*瓷砖详细信息*/ 
+INSERT INTO china_detail (china_id, image, specification, color, size, price) VALUES (1, 'image1.jpg', '规格1', '红色', '30x30cm', '50.00'), (1, 'image1.jpg', '规格2', '蓝色', '40x40cm', '60.00'), (2, 'image2.jpg', '规格1', '绿色', '50x50cm', '70.00'), (2, 'image2.jpg', '规格2', '黄色', '60x60cm', '80.00'), (3, 'image3.jpg', '规格1', '紫色', '70x70cm', '90.00');
+
+/*购物车*/ 
+INSERT INTO shopping_cart (description, image, user_id, china_id, china_detail, number, amount, create_time) VALUES ('瓷砖1描述', 'image1.jpg', 1, 1, '规格1', 2, 100.00, '2021-01-01 10:00:00'), ('瓷砖2描述', 'image2.jpg', 1, 2, '规格2', 1, 50.00, '2021-01-02 11:00:00'), ('瓷砖3描述', 'image3.jpg', 2, 3, '规格1', 3, 150.00, '2021-01-03 12:00:00'), ('瓷砖4描述', 'image4.jpg', 2, 4, '规格2', 1, 50.00, '2021-01-04 13:00:00'), ('瓷砖5描述', 'image5.jpg', 3, 5, '规格1', 2, 100.00, '2021-01-05 14:00:00');
+
